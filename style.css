@@ -1,0 +1,112 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1, h2 {
+  text-align: center;
+  color: #333;
+}
+
+.input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input-section input, .input-section select, .input-section button {
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.input-section button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.input-section button:hover {
+  background-color: #0056b3;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.task-item {
+  background-color: #f1f1f1;
+  margin: 10px 0;
+  padding: 12px 15px;
+  border-radius: 8px;
+}
+
+.task-item span {
+  font-weight: bold;
+  font-size: 1.05rem;
+}
+
+.actions {
+  margin-top: 8px;
+}
+
+.actions button {
+  margin-right: 8px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.actions button:hover {
+  opacity: 0.9;
+}
+
+.date {
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 4px;
+}
+
+.tag {
+  display: inline-block;
+  margin-left: 10px;
+  margin-top: 4px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background-color: #eee;
+  color: #333;
+}
+
+.priority.low {
+  background-color: #e6ffe6;
+  color: green;
+}
+.priority.medium {
+  background-color: #fff3cd;
+  color: #e67e22;
+}
+.priority.high {
+  background-color: #ffe6e6;
+  color: red;
+}
+.deadline {
+  background-color: #dceeff;
+  color: #0077cc;
+}
