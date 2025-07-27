@@ -1,47 +1,32 @@
 const taskInput = document.getElementById("taskInput");
+const descInput = document.getElementById("descInput");
 const deadlineInput = document.getElementById("deadlineInput");
 const prioritySelect = document.getElementById("prioritySelect");
 const pendingList = document.getElementById("pendingList");
 const completedList = document.getElementById("completedList");
 
-const priorityTag = document.getElementById("priorityTag");
-const deadlineTag = document.getElementById("deadlineTag");
-
-// Show live priority tag
-prioritySelect.addEventListener("change", () => {
-  const value = prioritySelect.value;
-  priorityTag.textContent = `Priority: ${value}`;
-  priorityTag.className = `tag priority ${value.toLowerCase()}`;
-});
-
-// Show live deadline tag
-deadlineInput.addEventListener("change", () => {
-  if (deadlineInput.value) {
-    const formatted = new Date(deadlineInput.value).toLocaleString();
-    deadlineTag.textContent = `Deadline: ${formatted}`;
-  } else {
-    deadlineTag.textContent = `No deadline selected`;
-  }
-});
-
 function saveToLocalStorage() {
   const pendingTasks = [...pendingList.children].map(li => ({
     text: li.querySelector("span").textContent,
+    desc: li.querySelector(".description")?.textContent || "",
     priority: li.dataset.priority,
     time: li.dataset.time,
     deadline: li.dataset.deadline
   }));
+
   const completedTasks = [...completedList.children].map(li => ({
     text: li.querySelector("span").textContent,
+    desc: li.querySelector(".description")?.textContent || "",
     priority: li.dataset.priority,
     time: li.dataset.time,
     deadline: li.dataset.deadline
   }));
+
   localStorage.setItem("pendingTasks", JSON.stringify(pendingTasks));
   localStorage.setItem("completedTasks", JSON.stringify(completedTasks));
 }
 
-function createTaskElement(text, time, priority, deadline, isCompleted) {
+function createTaskElement(text, desc, time, priority, deadline, isCompleted) {
   const li = document.createElement("li");
   li.className = "task-item";
   li.dataset.priority = priority;
@@ -53,17 +38,27 @@ function createTaskElement(text, time, priority, deadline, isCompleted) {
 
   const priorityTag = document.createElement("small");
   priorityTag.textContent = `Priority: ${priority}`;
-  priorityTag.style.color = priority === "High" ? "red" : priority === "Medium" ? "#e67e22" : "green";
+  priorityTag.style.color =
+    priority === "High" ? "red" :
+    priority === "Medium" ? "#e67e22" : "green";
 
   const date = document.createElement("div");
   date.className = "date";
-  date.innerHTML = isCompleted 
-    ? `✅ Completed: ${time}` 
+  date.innerHTML = isCompleted
+    ? `✅ Completed: ${time}`
     : `🕒 Created: ${time}`;
 
   const deadlineDiv = document.createElement("div");
   deadlineDiv.className = "date";
-  if (deadline) deadlineDiv.innerHTML = `⏰ Deadline: ${new Date(deadline).toLocaleString()}`;
+  if (deadline) {
+    deadlineDiv.innerHTML = `⏰ Deadline: ${new Date(deadline).toLocaleString()}`;
+  }
+
+  const descriptionDiv = document.createElement("div");
+  descriptionDiv.className = "description";
+  if (desc) {
+    descriptionDiv.textContent = desc;
+  }
 
   const actionDiv = document.createElement("div");
   actionDiv.className = "actions";
@@ -73,7 +68,7 @@ function createTaskElement(text, time, priority, deadline, isCompleted) {
   completeBtn.onclick = () => {
     li.remove();
     const newTime = new Date().toLocaleString();
-    const newElement = createTaskElement(text, newTime, priority, deadline, !isCompleted);
+    const newElement = createTaskElement(text, desc, newTime, priority, deadline, !isCompleted);
     (isCompleted ? pendingList : completedList).appendChild(newElement);
     saveToLocalStorage();
   };
@@ -82,8 +77,12 @@ function createTaskElement(text, time, priority, deadline, isCompleted) {
   editBtn.textContent = "✏️ Edit";
   editBtn.onclick = () => {
     const newText = prompt("Edit your task:", text);
+    const newDesc = prompt("Edit description:", desc);
     if (newText && newText.trim() !== "") {
       span.textContent = newText.trim();
+      if (newDesc !== null) {
+        descriptionDiv.textContent = newDesc.trim();
+      }
       saveToLocalStorage();
     }
   };
@@ -100,6 +99,7 @@ function createTaskElement(text, time, priority, deadline, isCompleted) {
   actionDiv.appendChild(deleteBtn);
 
   li.appendChild(span);
+  if (desc) li.appendChild(descriptionDiv);
   li.appendChild(priorityTag);
   li.appendChild(date);
   if (deadline) li.appendChild(deadlineDiv);
@@ -110,17 +110,18 @@ function createTaskElement(text, time, priority, deadline, isCompleted) {
 
 function addTask() {
   const text = taskInput.value.trim();
+  const desc = descInput.value.trim();
   const priority = prioritySelect.value;
   const deadline = deadlineInput.value;
   if (text === "") return;
 
   const time = new Date().toLocaleString();
-  const li = createTaskElement(text, time, priority, deadline, false);
+  const li = createTaskElement(text, desc, time, priority, deadline, false);
   pendingList.appendChild(li);
 
   taskInput.value = "";
+  descInput.value = "";
   deadlineInput.value = "";
-  deadlineTag.textContent = "No deadline selected";
   saveToLocalStorage();
 }
 
@@ -129,9 +130,9 @@ window.onload = () => {
   const savedCompleted = JSON.parse(localStorage.getItem("completedTasks")) || [];
 
   savedPending.forEach(task =>
-    pendingList.appendChild(createTaskElement(task.text, task.time, task.priority, task.deadline, false))
+    pendingList.appendChild(createTaskElement(task.text, task.desc, task.time, task.priority, task.deadline, false))
   );
   savedCompleted.forEach(task =>
-    completedList.appendChild(createTaskElement(task.text, task.time, task.priority, task.deadline, true))
+    completedList.appendChild(createTaskElement(task.text, task.desc, task.time, task.priority, task.deadline, true))
   );
 };

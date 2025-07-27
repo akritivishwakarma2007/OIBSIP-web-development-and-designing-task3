@@ -32,6 +32,15 @@ h1, h2 {
   border: 1px solid #ccc;
 }
 
+textarea {
+  resize: vertical;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+
 .input-section button {
   background-color: #007bff;
   color: white;
